@@ -19,7 +19,7 @@ builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("TicketDB")));
 
 builder.Services.AddScoped<IBookingService, BookingService>();
 
@@ -29,6 +29,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    // Safe to use now
+    db.Database.Migrate();
+    db.SeedFromSqlFile();
+}
+
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

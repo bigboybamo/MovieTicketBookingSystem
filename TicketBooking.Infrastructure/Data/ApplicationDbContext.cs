@@ -11,10 +11,18 @@ namespace TicketBooking.Infrastructure.Data
         public DbSet<Screening> Screenings => Set<Screening>();
         public DbSet<Seat> Seats => Set<Seat>();
 
+        public DbSet<Booking> Bookings => Set<Booking>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Seat>().HasIndex(s => new { s.ScreeningId, s.SeatNumber }).IsUnique();
-        }
+
+            modelBuilder.Entity<Booking>()
+            .HasOne(b => b.Seat)
+            .WithMany()
+            .HasForeignKey(b => b.SeatId)
+            .OnDelete(DeleteBehavior.Restrict);
+                }
     }
 }

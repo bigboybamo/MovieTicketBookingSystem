@@ -1,0 +1,82 @@
+-- Movies
+SET IDENTITY_INSERT Movies ON;
+INSERT INTO Movies (Id, Title) VALUES
+(1, 'Interstellar'),
+(2, 'The Matrix'),
+(3, 'Inception'),
+(4, 'The Dark Knight'),
+(5, 'Avengers: Endgame'),
+(6, 'Parasite'),
+(7, 'Joker'),
+(8, 'Tenet'),
+(9, 'Ford v Ferrari'),
+(10, 'Everything Everywhere All at Once');
+SET IDENTITY_INSERT Movies OFF;
+
+-- Screenings
+SET IDENTITY_INSERT Screenings ON;
+INSERT INTO Screenings (Id, MovieId, StartTime) VALUES
+(1, 1, '2025-07-22 18:30:00'),
+(2, 2, '2025-07-22 19:00:00'),
+(3, 3, '2025-07-22 19:30:00'),
+(4, 4, '2025-07-22 20:00:00'),
+(5, 5, '2025-07-22 20:30:00'),
+(6, 6, '2025-07-22 21:00:00'),
+(7, 7, '2025-07-22 21:30:00'),
+(8, 8, '2025-07-22 22:00:00'),
+(9, 9, '2025-07-22 22:30:00'),
+(10, 10, '2025-07-22 23:00:00');
+SET IDENTITY_INSERT Screenings OFF;
+
+-- Seats
+INSERT INTO Seats (ScreeningId, SeatNumber, IsBooked) VALUES
+(1, 'A1', 0),
+(1, 'A2', 0),
+(1, 'A3', 0),
+(1, 'A4', 0),
+(1, 'A5', 0),
+(2, 'A1', 0),
+(2, 'A2', 0),
+(2, 'A3', 0),
+(2, 'A4', 0),
+(2, 'A5', 0),
+(3, 'A1', 0),
+(3, 'A2', 0),
+(3, 'A3', 0),
+(3, 'A4', 0),
+(3, 'A5', 0),
+(4, 'A1', 0),
+(4, 'A2', 0),
+(4, 'A3', 0),
+(4, 'A4', 0),
+(4, 'A5', 0),
+(5, 'A1', 0),
+(5, 'A2', 0),
+(5, 'A3', 0),
+(5, 'A4', 0),
+(5, 'A5', 0),
+(6, 'A1', 0),
+(6, 'A2', 0),
+(6, 'A3', 0),
+(6, 'A4', 0),
+(6, 'A5', 0),
+(7, 'A1', 0),
+(7, 'A2', 0),
+(7, 'A3', 0),
+(7, 'A4', 0),
+(7, 'A5', 0),
+(8, 'A1', 0),
+(8, 'A2', 0),
+(8, 'A3', 0),
+(8, 'A4', 0),
+(8, 'A5', 0),
+(9, 'A1', 0),
+(9, 'A2', 0),
+(9, 'A3', 0),
+(9, 'A4', 0),
+(9, 'A5', 0),
+(10, 'A1', 0),
+(10, 'A2', 0),
+(10, 'A3', 0),
+(10, 'A4', 0),
+(10, 'A5', 0);
