@@ -1,0 +1,33 @@
+# Ignore user-specific files
+.vs/
+*.user
+*.suo
+
+# Build artifacts
+bin/
+obj/
+
+# Rider + VS Code
+.idea/
+.vscode/
+
+# Logs
+Logs/
+*.log
+
+# OS-specific files
+Thumbs.db
+.DS_Store
+
+# Dotnet artifacts
+*.dll
+*.pdb
+*.exe
+*.db
+*.cache
+
+# EF Core Migrations (optional)
+# Migrations/ if you generate it externally and want to ignore it
+
+# Other
+*.swp
