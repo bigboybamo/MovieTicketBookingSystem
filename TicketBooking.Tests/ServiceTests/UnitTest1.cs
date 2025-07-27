@@ -6,7 +6,6 @@ namespace TicketBooking.Tests.ServiceTests
         public void Setup()
         {
         }
-
         [Test]
         public void Test1()
         {
