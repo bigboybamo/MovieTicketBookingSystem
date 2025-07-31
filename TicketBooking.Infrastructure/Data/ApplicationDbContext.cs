@@ -17,12 +17,6 @@ namespace TicketBooking.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Seat>().HasIndex(s => new { s.ScreeningId, s.SeatNumber }).IsUnique();
-
-            modelBuilder.Entity<Booking>()
-            .HasOne(b => b.Seat)
-            .WithMany()
-            .HasForeignKey(b => b.SeatId)
-            .OnDelete(DeleteBehavior.Restrict);
-                }
+        }
     }
 }

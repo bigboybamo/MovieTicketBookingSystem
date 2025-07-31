@@ -8,7 +8,12 @@ namespace TicketBooking.Core.Exceptions
 {
     public class SeatAlreadyBookedException : AppException
     {
-        public SeatAlreadyBookedException(string seatNumber)
-            : base($"Seat '{seatNumber}' is already booked.", 409) { }
+        public IEnumerable<string> SeatNumbers { get; }
+
+        public SeatAlreadyBookedException(IEnumerable<string> seatNumbers)
+            : base($"The following seats are already booked: {string.Join(", ", seatNumbers)}", 409)
+        {
+            SeatNumbers = seatNumbers;
+        }
     }
 }

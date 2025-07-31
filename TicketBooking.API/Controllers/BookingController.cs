@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TicketBooking.Application.Dtos;
 using TicketBooking.Core.Interfaces;
 
 namespace TicketBooking.API.Controllers
@@ -14,10 +15,11 @@ namespace TicketBooking.API.Controllers
             _bookingService = bookingService;
         }
 
-        [HttpPost("{screeningId}/book")]
-        public async Task<IActionResult> Book(int screeningId, [FromBody] List<string> seatNumbers)
+        [HttpPost]
+        [Route("AddBooking")]
+        public async Task<IActionResult> Book(AddBookingDto bookingDto)
         {
-            var success = await _bookingService.BookSeatsAsync(screeningId, seatNumbers);
+            var success = await _bookingService.BookSeatsAsync(bookingDto);
             return success ? Ok("Booking successful") : BadRequest("Booking failed");
         }
     }

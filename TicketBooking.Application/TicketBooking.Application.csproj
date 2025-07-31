@@ -16,8 +16,4 @@
     <ProjectReference Include="..\TicketBooking.Infrastructure\TicketBooking.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Dtos\" />
-  </ItemGroup>
-
 </Project>

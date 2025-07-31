@@ -11,10 +11,8 @@ namespace TicketBooking.Core.Entities
         public int Id { get; set; }
 
         public int ScreeningId { get; set; }
-        public Screening Screening { get; set; }
-
-        public int SeatId { get; set; }
-        public Seat Seat { get; set; }
+        
+        public List<string> BookedSeats { get; set; } = new List<string>();
 
         public string NameOfPerson { get; set; }
 
