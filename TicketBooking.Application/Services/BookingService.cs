@@ -38,6 +38,7 @@ namespace TicketBooking.Application.Services
 
                 if(targetSeats.Any(x => x.IsBooked))
                 {
+                    //Seats are taken
                     _logger.LogWarning("No available seats found for booking for screening {ScreeningId} with seats: {Seats}",
                         bookingDto.ScreeningId, string.Join(", ", bookingDto.SeatNumbers));
                     IEnumerable<string> seatNumber = targetSeats.Where(x => x.IsBooked).Select(x => x.SeatNumber);
