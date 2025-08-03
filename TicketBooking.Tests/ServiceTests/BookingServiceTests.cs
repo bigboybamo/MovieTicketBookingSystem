@@ -1,8 +1,10 @@
 using Microsoft.Extensions.Logging;
 using Moq;
+using NUnit.Framework.Internal;
 using TicketBooking.Application.Dtos;
 using TicketBooking.Application.Services;
 using TicketBooking.Core.Exceptions;
+using TicketBooking.Core.Interfaces;
 using TicketBooking.Infrastructure.Data;
 using TicketBooking.Tests.Helpers;
 
@@ -11,11 +13,15 @@ namespace TicketBooking.Tests.ServiceTests
     public class Tests
     {
         private ApplicationDbContext _dbContext;
+        private Mock<ILogger<BookingService>> _logger;
+        private BookingService _bookingService;
 
         [SetUp]
         public void Setup()
         {
             _dbContext = TestHelper.GetInMemoryDbContextAsync();
+            _logger = new Mock<ILogger<BookingService>>();
+            _bookingService = new BookingService(_dbContext, _logger.Object);
         }
 
         [TearDown]
@@ -27,9 +33,6 @@ namespace TicketBooking.Tests.ServiceTests
         [Test]
         public async Task BookSeatsAsync_Should_BookSeats_Successfully()
         {
-            var logger = new Mock<ILogger<BookingService>>();
-            var service = new BookingService(_dbContext, logger.Object);
-
             var dto = new AddBookingDto
             {
                 NameOfPerson = "John Doe",
@@ -37,16 +40,13 @@ namespace TicketBooking.Tests.ServiceTests
                 SeatNumbers = new List<string> { "A1", "A3" }
             };
 
-            var result = await service.BookSeatsAsync(dto);
+            var result = await _bookingService.BookSeatsAsync(dto);
             Assert.That(result, Is.True);
         }
 
         [Test]
         public async Task BookSeatsAsync_Should_Throw_SeatAlreadyBookedException_If_Seat_Already_Booked()
         {
-            var logger = new Mock<ILogger<BookingService>>();
-            var service = new BookingService(_dbContext, logger.Object);
-
             var dto = new AddBookingDto
             {
                 NameOfPerson = "Jane Smith",
@@ -54,7 +54,7 @@ namespace TicketBooking.Tests.ServiceTests
                 SeatNumbers = new List<string> { "A2" } // already booked
             };
 
-            var ex = Assert.ThrowsAsync<SeatAlreadyBookedException>(() => service.BookSeatsAsync(dto));
+            var ex = Assert.ThrowsAsync<SeatAlreadyBookedException>(() => _bookingService.BookSeatsAsync(dto));
 
             Assert.Contains("A2", ex.SeatNumbers.ToList());
         }
@@ -62,9 +62,6 @@ namespace TicketBooking.Tests.ServiceTests
         [Test]
         public async Task BookSeatsAsync_Should_Throw_AppException_If_Seat_Does_Not_Exist()
         {
-            var logger = new Mock<ILogger<BookingService>>();
-            var service = new BookingService(_dbContext, logger.Object);
-
             var dto = new AddBookingDto
             {
                 NameOfPerson = "Alice",
@@ -72,7 +69,7 @@ namespace TicketBooking.Tests.ServiceTests
                 SeatNumbers = new List<string> { "B99" } // non-existent seat
             };
 
-            var ex = Assert.ThrowsAsync<AppException>(() => service.BookSeatsAsync(dto));
+            var ex = Assert.ThrowsAsync<AppException>(() => _bookingService.BookSeatsAsync(dto));
             Assert.That(ex.StatusCode, Is.EqualTo(404));
         }
     }
