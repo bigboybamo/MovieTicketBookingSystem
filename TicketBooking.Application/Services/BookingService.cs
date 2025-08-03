@@ -1,6 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using TicketBooking.Application.Dtos;
+using TicketBooking.Core.Entities;
 using TicketBooking.Core.Exceptions;
 using TicketBooking.Core.Interfaces;
 using TicketBooking.Infrastructure.Data;
@@ -11,11 +15,13 @@ namespace TicketBooking.Application.Services
     {
         private readonly ILogger<BookingService> _logger;
         private readonly ApplicationDbContext _context;
+        private readonly IDistributedCache _cache;
 
-        public BookingService(ApplicationDbContext context, ILogger<BookingService> logger)
+        public BookingService(ApplicationDbContext context, ILogger<BookingService> logger, IDistributedCache cache)
         {
             _context = context;
             _logger = logger;
+            _cache = cache;
         }
 
         public async Task<bool> BookSeatsAsync(AddBookingDto bookingDto)
@@ -23,13 +29,45 @@ namespace TicketBooking.Application.Services
             _logger.LogInformation("Booking started for screening {ScreeningId} with seats: {Seats}",
             bookingDto.ScreeningId, string.Join(", ", bookingDto.SeatNumbers));
 
+            Screening? screening;
+            var cacheKey = $"screening:{bookingDto.ScreeningId}";
             try
             {
-                var screening = await _context.Screenings
-                    .Include(s => s.Seats)
-                    .FirstOrDefaultAsync(s => s.Id == bookingDto.ScreeningId);
+                var cachedScreening = await _cache.GetStringAsync(cacheKey);
+                if (!string.IsNullOrEmpty(cachedScreening))
+                {
+                    screening = JsonSerializer.Deserialize<Screening>(cachedScreening, new JsonSerializerOptions
+                    {
+                        ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                        PropertyNameCaseInsensitive = true
+                    })!;
+                    _logger.LogInformation("Screening loaded from Redis cache.");
+                }
+                else
+                {
+                    screening = await _context.Screenings
+                        .Include(s => s.Seats)
+                        .FirstOrDefaultAsync(s => s.Id == bookingDto.ScreeningId);
 
-                if (screening == null) return false;
+                    if (screening == null)
+                    {
+                        _logger.LogWarning("Screening not found for ID: {ScreeningId}", bookingDto.ScreeningId);
+                        return false;
+                    }
+
+                    var serialized = JsonSerializer.Serialize(screening, new JsonSerializerOptions
+                    {
+                        ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                        WriteIndented = false
+                    });
+
+                    await _cache.SetStringAsync(cacheKey, serialized, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+                    });
+
+                    _logger.LogInformation("Screening cached to Redis.");
+                }
 
                 var targetSeats = screening.Seats
                    .Where(seat => !string.IsNullOrWhiteSpace(seat.SeatNumber)
@@ -69,8 +107,11 @@ namespace TicketBooking.Application.Services
                 _context.Bookings.Add(booking);
 
                 await _context.SaveChangesAsync();
-                return true;
 
+                await _cache.RemoveAsync(cacheKey);
+                _logger.LogInformation("Cache invalidated for screening {ScreeningId}", bookingDto.ScreeningId);
+
+                return true;
             }
             catch (AppException ex)
             {

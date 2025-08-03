@@ -26,6 +26,13 @@ builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddSingleton<IBackgroundBookingQueue, BackgroundBookingQueue>();
 builder.Services.AddHostedService<BackgroundBookingWorker>();
 
+//Redis cache configuration
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "TicketBooking:";
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
