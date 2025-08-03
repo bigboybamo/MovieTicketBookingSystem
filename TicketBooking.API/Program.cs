@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using TicketBooking.API.Middlewares;
+using TicketBooking.Application.BackgroundServices;
 using TicketBooking.Application.Services;
 using TicketBooking.Core.Interfaces;
 using TicketBooking.Infrastructure.Data;
@@ -22,6 +23,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TicketDB")));
 
 builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddSingleton<IBackgroundBookingQueue, BackgroundBookingQueue>();
+builder.Services.AddHostedService<BackgroundBookingWorker>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
