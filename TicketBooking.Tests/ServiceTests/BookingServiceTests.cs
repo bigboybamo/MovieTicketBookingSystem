@@ -10,7 +10,7 @@ using TicketBooking.Tests.Helpers;
 
 namespace TicketBooking.Tests.ServiceTests
 {
-    public class Tests
+    public class BookingServiceTests
     {
         private ApplicationDbContext _dbContext;
         private Mock<ILogger<BookingService>> _logger;
@@ -56,7 +56,7 @@ namespace TicketBooking.Tests.ServiceTests
 
             var ex = Assert.ThrowsAsync<SeatAlreadyBookedException>(() => _bookingService.BookSeatsAsync(dto));
 
-            Assert.Contains("A2", ex.SeatNumbers.ToList());
+            Assert.That(ex.SeatNumbers.ToList(), Does.Contain("A2"));
         }
 
         [Test]
