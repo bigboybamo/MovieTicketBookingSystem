@@ -129,5 +129,16 @@ namespace TicketBooking.Application.Services
                 throw;
             }
         }
+
+        public void ShowScreeningTitle()
+        {
+            var screenings = _context.Screenings.FirstOrDefault(x => x.Id == 1);
+
+            if (screenings != null) 
+            {
+                Console.WriteLine($"Screnning name is {screenings.Title}");
+            }
+        }
+
     }
 }
