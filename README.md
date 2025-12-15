@@ -1,11 +1,11 @@
-# 🎟 High-Volume Ticket Booking System
+# High-Volume Ticket Booking System
 
 A sample **.NET 8** solution that demonstrates how to design, build, and test a **high-concurrency ticket booking system**.  
 The system implements **optimistic concurrency control**, **background queue processing**, and **Redis caching** to efficiently handle a large number of booking requests while preventing double-booking of seats.
 
 ---
 
-## 📌 Features
+##  Features
 - **EF Core** with SQL Server for persistence
 - **Optimistic Concurrency** to handle race conditions when booking seats
 - **Custom Exception Handling & Centralized Logging**
@@ -16,7 +16,7 @@ The system implements **optimistic concurrency control**, **background queue pro
 ---
 
 
-## 📂 Technologies Used
+##  Technologies Used
 - **.NET 8**
 - **Entity Framework Core**
 - **SQL Server** (can be local or containerized)
@@ -27,9 +27,9 @@ The system implements **optimistic concurrency control**, **background queue pro
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
-### 1️⃣ Prerequisites
+###  Prerequisites
 - [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 - [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) (or Docker container)
 - [Redis](https://redis.io/) (local install or Docker container)
@@ -37,7 +37,7 @@ The system implements **optimistic concurrency control**, **background queue pro
 
 ---
 
-### 2️⃣ Setup
+###  Setup
 
 1. **Clone the repository**
 ```bash
